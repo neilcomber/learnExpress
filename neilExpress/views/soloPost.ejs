@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Post</title>
+</head>
+<body>
+    <h1>Solo Post</h1>
+    <p>Post - <%= thisPost.post%></p>
+    <p>Author - <%= thisPost.author%></p>
+    <form method="get" action="/posts/<%=thisPost.id%>/edit">
+        <button>Edit</button>
+    </form>
+    
+    <form method="post" action="/posts/<%=thisPost.id%>/delete?_method=DELETE">
+        <button>Delete</button>
+    </form>
+    
+</body>
+</html>
