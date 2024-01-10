@@ -11,29 +11,60 @@ mongoose.connect('mongodb://127.0.0.1:27017/shopApp')
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true, 
+        maxlength: 20
+
     }, 
     price: {
         type: Number, 
-        required: true
+        required: true, 
+        min: [0, 'that price is too low!!!']
+    }, 
+    onSale: {
+        type: Boolean, 
+        default: false
+    }, 
+    categories: {
+        type: [String]
+    }, 
+    qty: {
+        online:{
+            type: Number, 
+            default: 0
+        }, 
+        inStore: {
+            type: Number, 
+            default: 0
+        }
+    }, 
+    size: {
+        type: String, 
+        enum: ['S', 'M', 'L']
     }
     
-})
+});
+
+productSchema.methods.greet = function() {
+    console.log("hey hey hey bitches how you doing???")
+}
 
 const Product = mongoose.model('Product', productSchema);
 
-const bike = new Product({
-    name: 'Mountain Bike', 
-    price: 99, 
-    color: 'red'
-})
+// Product.findOneAndUpdate({name: 'Tire Pump'}, {price: 30, size: 'M'}, {new: true, runValidators: true })
 
-bike.save()
-.then(data => {
-    console.log('It worked')
-    console.log(data)
-})
-.catch(err => {
-    console.log('NOT WORKING!!!')
-    console.log(err)
-})
+// // const bike = new Product({
+// //     name: 'Tire Pump', 
+// //     price: 20, 
+// //     categories: ['cycling', 'wheels']
+    
+// // })
+
+// // bike.save()
+// .then(data => {
+//     console.log('------It worked!!!!-----')
+//     console.log(data)
+// })
+// .catch(err => {
+//     console.log('NOT WORKING!!!')
+//     console.log(err)
+// })
