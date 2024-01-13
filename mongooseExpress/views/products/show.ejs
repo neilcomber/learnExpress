@@ -10,8 +10,13 @@
 
     <%=product.name%> - £<%=product.price%>
     <section>
+        category: <%=product.category%>
+    </section>
+    <section>
         <a href="/products">All Products</a>
     </section>
+
+    <a href="/products/<%=product._id%>/edit">Edit <%=product.name%></a>
     
 </body>
 </html>
