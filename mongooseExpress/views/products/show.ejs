@@ -10,13 +10,17 @@
 
     <%=product.name%> - £<%=product.price%>
     <section>
-        category: <%=product.category%>
+        category: <a href="/products?category=<%=product.category%>"><%=product.category%></a>
     </section>
     <section>
         <a href="/products">All Products</a>
     </section>
 
     <a href="/products/<%=product._id%>/edit">Edit <%=product.name%></a>
+
+    <form method="post" action="/products/<%=product._id%>?_method=DELETE">
+        <button>Delete Product</button>
+    </form>
     
 </body>
 </html>

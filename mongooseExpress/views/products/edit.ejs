@@ -20,9 +20,11 @@
     <section>
         <label for="category">Select Category:</label>
         <select name="category" id="category">
-            <option value="fruit">fruit</option>
-            <option value="veg">vegetable</option>
-            <option value="dairy">dairy</option>
+            <% for(let c of categories) { %>
+                <option value="<%=c%>" <%= product.category === c ? 'selected' : ''%> ><%=c%></option>
+                <% } %>
+
+            
         </select>
     </section>
     <button>Submit</button>
