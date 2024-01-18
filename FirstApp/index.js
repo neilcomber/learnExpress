@@ -2,10 +2,6 @@ const express = require('express');
 
 const app = express();
 
-// app.use((req, res)=>{
-//     console.log('we got a request')
-//     res.send('<h1>This is my webpage!</h1>')
-// })
 
 app.get('/', (req, res) => {
     res.send('<h1>The Home Page !!!</h1>')
