@@ -7,17 +7,19 @@
 </head>
 <body>
     <h1>Here is the <%=product.name%></h1>
-
-    <%=product.name%> - £<%=product.price%>
-    <section>
-        category: <a href="/products?category=<%=product.category%>"><%=product.category%></a>
-    </section>
+<ul>
+    <li><%=product.name%> - £<%=product.price%></li>
+   
+      <li>category: <a href="/products?category=<%=product.category%>"><%=product.category%></a></li>  
+   
+      <li><a href="/farms/<%=product.farm._id%>">Farm: <%=product.farm.name%></a></li>
+    </ul>
     <section>
         <a href="/products">All Products</a>
     </section>
 
     <a href="/products/<%=product._id%>/edit">Edit <%=product.name%></a>
-
+<hr>
     <form method="post" action="/products/<%=product._id%>?_method=DELETE">
         <button>Delete Product</button>
     </form>

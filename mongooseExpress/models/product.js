@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
+const { Schema } = mongoose;
+
 const productSchema = new mongoose.Schema({
     name: {
         type: String, 
-        required: true
+        required: [true, 'name cannot be blank']
     } ,
     price: {
         type: Number, 
@@ -14,6 +16,10 @@ const productSchema = new mongoose.Schema({
         type: String, 
         lowercase: true,
         enum: ['fruit', 'veg', 'dairy', 'fish']
+    }, 
+    farm: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Farm'
     }
 })
 

@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const AppError = require('./AppError');
 
 const Product = require('./models/product');
+const Farm = require('./models/farm');
 
 mongoose.connect('mongodb://127.0.0.1:27017/farmShop')
 .then(()=>{
@@ -19,11 +20,65 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'))
 
-const categories = ['fruit', 'veg', 'dairy', 'fish']
-
 app.set('views', path.join(__dirname, 'views'));
 
 app.set('view engine', 'ejs');
+
+// Farm Routes
+
+app.get('/farms', async (req, res) => {
+    const farms = await Farm.find({})
+    res.render('farms/index', {farms})
+})
+
+app.get('/farms/new', (req, res) => {
+    res.render('farms/new')
+})
+
+app.post('/farms', async (req, res) => {
+    const newFarm = new Farm(req.body)
+    await newFarm.save()
+    res.redirect('/farms')
+})
+
+app.get('/farms/:id', async (req, res) => {
+    const {id} = req.params;
+    const farm = await Farm.findById(id).populate('products');
+    res.render('farms/show', {farm})
+})
+
+app.get('/farms/:id/products/new', async (req, res) => {
+    const {id} = req.params;
+    const farm = await Farm.findById(id)
+    res.render('products/new', { categories, id, farm})
+})
+
+app.post('/farms/:id/products', async (req, res) => {
+    const { id } = req.params;
+    const farm = await Farm.findById(id);
+    const product =  new Product(req.body);
+    farm.products.push(product)
+    product.farm = farm;
+    await farm.save();
+    await product.save();
+    res.redirect(`/farms/${farm._id}`)
+})
+
+app.delete('/farms/:id', async (req, res) => {
+    try{
+    console.log('deleting')
+    const farm = await Farm.findByIdAndDelete(req.params.id);
+    res.send('/farms')
+} catch(e) {
+    console.log(e)
+}
+})
+
+// Product routes
+
+const categories = ['fruit', 'veg', 'dairy', 'fish']
+
+
 
 function wrapAsync(fn) {
     return function (req, res, next) {
@@ -82,7 +137,8 @@ app.put('/products/:id', wrapAsync(async (req, res, next) => {
 
 app.get('/products/:id', wrapAsync( async (req, res, next) => {
     const { id } = req.params
-    const product = await Product.findById(id)
+    const product = await Product.findById(id).populate('farm', 'name');
+    console.log(product)
     if(!product){
        throw new AppError('There is no product with that id', 400);
     }
@@ -96,6 +152,18 @@ app.delete('/products/:id', wrapAsync(async (req, res, next) => {
 
     res.redirect('/products')
 }))
+
+const handleValidationError = err => {
+    console.dir(err);
+    return new AppError(`Validation Failed...${err.message}`, 400)
+}
+
+app.use((err, req, res, next) => {
+    console.log(err.name)
+    if (err.name === 'ValidationError') err = handleValidationError(err)
+    if (err.name === 'CastError') err = handleValidationError(err)
+    next(err);
+})
 
 app.use((err, req, res, next) => {
     const {status = 500, message = 'Something went wrong'} = err;
